@@ -34,22 +34,25 @@
 
                 try
                 {
-                    Console.WriteLine($"Trying: {instance.Url}");
+                    instance.Increment();
+
+                    Console.WriteLine($"[{instance.Url}] Active: {instance.ActiveConnections}");
 
                     var response = await _httpClient.GetAsync($"{instance.Url}/ping");
 
                     if (response.IsSuccessStatusCode)
                     {
                         var content = await response.Content.ReadAsStringAsync();
-
-                        Console.WriteLine($"Success: {instance.Url}");
-
                         return Content(content, "application/json");
                     }
                 }
                 catch
                 {
                     Console.WriteLine($"Failed: {instance.Url}");
+                }
+                finally
+                {
+                    instance.Decrement();
                 }
             }
 
