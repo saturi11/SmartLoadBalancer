@@ -11,8 +11,10 @@ var app = builder.Build();
 var instanceId = Environment.GetEnvironmentVariable("INSTANCE_ID")
                  ?? Guid.NewGuid().ToString();
 
-app.MapGet("/ping", () =>
+app.MapGet("/ping", async () =>
 {
+    await Task.Delay(200); // Simulate latency
+
     return Results.Ok(new
     {
         instance = instanceId,
