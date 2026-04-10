@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+
+  loadbalancer:
+    build:
+      context: .
+      dockerfile: LoadBalancer.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - backend-1
+      - backend-2
+      - backend-3
+
+  backend-1:
+    build:
+      context: .
+      dockerfile: Backend.Service/Dockerfile
+    environment:
+      - INSTANCE_ID=backend-1
+
+  backend-2:
+    build:
+      context: .
+      dockerfile: Backend.Service/Dockerfile
+    environment:
+      - INSTANCE_ID=backend-2
+
+  backend-3:
+    build:
+      context: .
+      dockerfile: Backend.Service/Dockerfile
+    environment:
+      - INSTANCE_ID=backend-3

@@ -13,11 +13,11 @@
             _strategy = strategy;
 
             _instances = new List<BackendInstance>
-        {
-            new() { Url = "http://localhost:5001" },
-            new() { Url = "http://localhost:5002" },
-            new() { Url = "http://localhost:5003" }
-        };
+            {
+                new() { Url = "http://backend-1:8080" },
+                new() { Url = "http://backend-2:8080" },
+                new() { Url = "http://backend-3:8080" }
+            };
         }
 
         public BackendInstance GetNextInstance()

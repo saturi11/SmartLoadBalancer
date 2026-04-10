@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".dockerignore" />
+    <File Path="docker-compose.yml" />
+  </Folder>
   <Project Path="Backend.Service/Backend.Service.csproj" />
   <Project Path="LoadBalancer.Api/LoadBalancer.Api.csproj" />
 </Solution>
