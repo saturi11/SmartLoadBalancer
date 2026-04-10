@@ -19,13 +19,41 @@
         [HttpGet]
         public async Task<IActionResult> Forward()
         {
-            var instance = _lb.GetNextInstance();
+            var instances = _lb.GetAllInstances()
+                               .Where(i => i.IsHealthy)
+                               .ToList();
 
-            var response = await _httpClient.GetAsync($"{instance.Url}/ping");
+            if (!instances.Any())
+                return StatusCode(503, "No healthy instances");
 
-            var content = await response.Content.ReadAsStringAsync();
+            var attempts = instances.Count;
 
-            return Content(content, "application/json");
+            for (int i = 0; i < attempts; i++)
+            {
+                var instance = _lb.GetNextInstance();
+
+                try
+                {
+                    Console.WriteLine($"Trying: {instance.Url}");
+
+                    var response = await _httpClient.GetAsync($"{instance.Url}/ping");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+
+                        Console.WriteLine($"Success: {instance.Url}");
+
+                        return Content(content, "application/json");
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine($"Failed: {instance.Url}");
+                }
+            }
+
+            return StatusCode(503, "All instances failed");
         }
     }
 }
