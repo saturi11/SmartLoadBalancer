@@ -1,7 +1,10 @@
-﻿namespace LoadBalancer.Api.Controllers
+﻿
+using Microsoft.AspNetCore.Mvc;
+using LoadBalancer.Api.Services;
+
+namespace LoadBalancer.Api.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-    using LoadBalancer.Api.Services;
+
 
     [ApiController]
     [Route("{**catch-all}")]
@@ -32,27 +35,36 @@
             {
                 var instance = _lb.GetNextInstance();
 
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
                 try
                 {
-                    instance.Increment();
-
-                    Console.WriteLine($"[{instance.Url}] Active: {instance.ActiveConnections}");
+                    instance.IncrementConnections();
+                    instance.IncrementRequests();
 
                     var response = await _httpClient.GetAsync($"{instance.Url}/ping");
+
+                    stopwatch.Stop();
+                    instance.AddResponseTime(stopwatch.ElapsedMilliseconds);
 
                     if (response.IsSuccessStatusCode)
                     {
                         var content = await response.Content.ReadAsStringAsync();
                         return Content(content, "application/json");
                     }
+
+                    instance.IncrementFailures();
                 }
                 catch
                 {
-                    Console.WriteLine($"Failed: {instance.Url}");
+                    stopwatch.Stop();
+                    instance.AddResponseTime(stopwatch.ElapsedMilliseconds);
+
+                    instance.IncrementFailures();
                 }
                 finally
                 {
-                    instance.Decrement();
+                    instance.DecrementConnections();
                 }
             }
 
