@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Backend.Service/Backend.Service.csproj" />
+  <Project Path="LoadBalancer.Api/LoadBalancer.Api.csproj" />
+</Solution>
