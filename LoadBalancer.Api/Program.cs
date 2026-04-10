@@ -9,7 +9,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<ILoadBalancingStrategy, RoundRobinStrategy>();
+builder.Services.AddSingleton<ILoadBalancingStrategy, LeastConnectionsStrategy>();
 builder.Services.AddSingleton<LoadBalancerService>();
 
 var app = builder.Build();
