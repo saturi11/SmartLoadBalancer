@@ -1,7 +1,8 @@
-﻿namespace LoadBalancer.Api.Strategies
-{
-    using LoadBalancer.Api.Models;
+﻿using LoadBalancer.Api.Models;
 
+namespace LoadBalancer.Api.Strategies
+{
+   
     public class RoundRobinStrategy : ILoadBalancingStrategy
     {
         private int _index = 0;
